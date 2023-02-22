@@ -38,11 +38,17 @@ def edit_excel():
               ws.cell(row=i, column=7).value = string.replace('.PICT @ :Pictures:', '')
               
               #ControlQ1 Copy 2 the 2nd row for the trial in keys between []
-              string = ws_old.cell(row=i+1, column=11).value
-              ws.cell(row=i+1, column=8).value = string.replace('[', '').replace(']','')
-              print(i)
-              print(ws_old.cell(row=i+1, column=14).coordinate)
-              print(ws_old.cell(row=i+1, column=14).value)
+              string = ws_old.cell(row=i+1, column=14).value
+              ws.cell(row=i, column=8).value = string.replace('[', '').replace(']','')
+
+              # ControlQ1 Copy - 2 - 2the 3rd  row for the trial in keys
+              string = ws_old.cell(row=i+2, column=14).value
+              ws.cell(row=i, column=9).value = string.replace('[', '').replace(']','')
+ 
+              #FirstMoozleProp Copy 13 the 4th row for the trial in response label
+              string = ws_old.cell(row=i+3, column=5).value
+              ws.cell(row=i, column=10).value = string.replace('.PICT @ :Pictures:', '')
+
 
 
               i += 1
@@ -52,12 +58,19 @@ def edit_excel():
               ws.cell(row=i, column=7).value = string.replace('.PICT @ :Pictures:', '')
 
               #ControlQ1 Copy 2 the 2nd row for the trial in keys between []
-              string = ws_old.cell(row=j+1, column=11).value
-              ws.cell(row=i+1, column=8).value = string.replace('[', '').replace(']','')
-              print(i)
-              print(ws_old.cell(row=j+1, column=14).coordinate)
-              print(ws_old.cell(row=j+1, column=14).value)
+              string = ws_old.cell(row=j+1, column=14).value
+              ws.cell(row=i, column=8).value = string.replace('[', '').replace(']','')
+
  
+              #ControlQ1 Copy - 2 - 2the 3rd  row for the trial in keys
+              string = ws_old.cell(row=j+2, column=14).value
+              ws.cell(row=i, column=9).value = string.replace('[', '').replace(']','')
+ 
+
+              #FirstMoozleProp Copy 13 the 4th row for the trial in response label
+              string = ws_old.cell(row=j+3, column=5).value
+              ws.cell(row=i, column=10).value = string.replace('.PICT @ :Pictures:', '')
+
 
               i += 1
               j += 9  
