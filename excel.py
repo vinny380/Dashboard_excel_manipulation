@@ -1,40 +1,72 @@
 import openpyxl
-import streamlit as st
 from io import BytesIO
 
-st.title("Language and Cognition Lab🧠📊")
-st.image('https://i.ibb.co/L0hHCFZ/Screenshot-2023-02-22-at-12-57-43-PM.png')
+def edit_excel():
+  path1 = 'edited_.xlsx'
+  wb = openpyxl.Workbook()
+  wb_old = openpyxl.load_workbook('/content/workbook (5).xlsx')
+  column_values = ['Subject Number', 'list', 'trial', 'null', 'condition', 'time',
+                   'Relationship',
+                   'ControlQ1 Copy 2', 'ControlQ1 Copy - 2 - 2',
+                   'FirstMoozleProp Copy 13',
+                  'SecondMoozleProp Copy 13', 'SecondMoozleProp2 Copy 13','ChoiceResponse Copy 2',
+                  'ControlQ2 Copy 2', 'ControlQ2 Copy-2 - 2', 'Choice','SameChoice ', 'BeliefType', 'AgeGroup']
+  ws = wb.active
+  ws_old = wb_old.active
+  ws.delete_rows(0,17)
 
-st.markdown("Automated Excel Editor")
-excel_file = st.file_uploader('Upload your excel file')
-@st.cache_data()
-def modify(excel_file):
-    wb = openpyxl.load_workbook(BytesIO(excel_file.read()))
-    sheet = wb.active #specify the sheet name to select other than the active sheet
-    print("Maximum rows before removing : ",sheet.max_row)
-    sheet.insert_cols(1, 2)
-    sheet.insert_cols(idx=4)
-    sheet.delete_rows(0,17)
-    sheet['A1'] = "Subject Number"
-    sheet['B1'] = 'list'
-    sheet['D1'] = 'null'
-    for row in sheet.iter_rows():
-        values = [cell.value for cell in row]
-        values[4], values[10] = values[10], values[4]
-        for i, cell in enumerate(row):
-            cell.value = values[i]
+  for index, value in enumerate(column_values, start=1):
+      cell = ws.cell(row=1, column=index)
+      cell.value = value
+      wb.save(path1)
 
-    print("Maximum rows after removing : ", sheet.max_row)
-    path1 = 'edited_.xlsx'
-    wb.save(path1)
-    st.download_button(
-        label="Download Updated Excel Workbook",
-        data=open(path1, 'rb').read(),
-        file_name="workbook.xlsx",
-        mime="xlsx"
-    )
-# 10 to 
+  # for row in ws.iter_rows():
+  #   values = [cell.value for cell in row]
+  #   for i, cell in enumerate(row):
+  #       cell.value = values[i]    
 
-edit = st.button('Click me')
-if edit:
-    modify(excel_file)
+  # ws.insert_cols(1, 2)
+  # ws_old.delete_rows(0,17)
+  i = 2
+  j = 11
+  while i <= 25:
+    for cell in ws_old['C']:
+        if cell.value == i:
+            if i == 2:
+              # Relationship
+              string = ws_old.cell(row=i, column=5).value
+              ws.cell(row=i, column=7).value = string.replace('.PICT @ :Pictures:', '')
+              
+              #ControlQ1 Copy 2 the 2nd row for the trial in keys between []
+              string = ws_old.cell(row=i+1, column=11).value
+              ws.cell(row=i+1, column=8).value = string.replace('[', '').replace(']','')
+              print(i)
+              print(ws_old.cell(row=i+1, column=14).coordinate)
+              print(ws_old.cell(row=i+1, column=14).value)
+
+
+              i += 1
+            else:
+              # Relationship
+              string = ws_old.cell(row=j, column=5).value
+              ws.cell(row=i, column=7).value = string.replace('.PICT @ :Pictures:', '')
+
+              #ControlQ1 Copy 2 the 2nd row for the trial in keys between []
+              string = ws_old.cell(row=j+1, column=11).value
+              ws.cell(row=i+1, column=8).value = string.replace('[', '').replace(']','')
+              print(i)
+              print(ws_old.cell(row=j+1, column=14).coordinate)
+              print(ws_old.cell(row=j+1, column=14).value)
+ 
+
+              i += 1
+              j += 9  
+  path1 = 'edited_.xlsx'
+  wb.save(path1)
+
+
+
+  
+      
+
+edit_excel()
