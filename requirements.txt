@@ -1,2 +1,3 @@
 pip3 install openpyxl
 pip3 install io
+pip3 install streamlit
