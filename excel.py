@@ -4,7 +4,6 @@ import streamlit as st
 
 st.title("Language and Cognition Lab🧠📊")
 st.image('https://i.ibb.co/L0hHCFZ/Screenshot-2023-02-22-at-12-57-43-PM.png')
-
 st.markdown("Automated Excel Editor")
 excel_file = st.file_uploader('Upload your excel file')
 
@@ -212,7 +211,9 @@ def edit_excel():
         file_name="workbook.xlsx",
         mime="xlsx"
     )
-  
+st.write('''
+Please make sure to have the header of the original excel file be between rows 1-17.
+Also make sure to have the Subject Number on cell A12.\nEnjoy!!''')
       
 edit = st.button('Click me')
 if edit:
