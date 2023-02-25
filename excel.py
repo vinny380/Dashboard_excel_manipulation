@@ -44,7 +44,8 @@ def edit_excel():
   ws_old = wb_old.active #specify the ws_old name to select other than the active ws_old
   number = int(ws_old['A12'].value.replace('Subject Number: ', ''))
   if ws_old.max_row != 236:
-    st.write("The spreadsheet provided is missing the number of data required. You should have samples 2 to 25. Every sample should have exactly 9 trials/rows.")
+    st.warning("The spreadsheet provided is missing the number of data required. You should have samples 2 to 25. Every sample should have exactly 9 trials/rows.", icon="⚠️")
+
   else:
     print("Maximum rows before removing : ",ws_old.max_row)
     ws_old.insert_cols(1, 2)
