@@ -43,11 +43,31 @@ def edit_excel():
   wb_old = openpyxl.load_workbook(BytesIO(excel_file.read()))
   ws_old = wb_old.active #specify the ws_old name to select other than the active ws_old
   number = int(ws_old['A12'].value.replace('Subject Number: ', ''))
-  if ws_old.max_row != 236:
+  if ws_old.max_row > 236:
     st.warning("The spreadsheet provided is missing the number of data required. You should have samples 2 to 25. Every sample should have exactly 9 trials/rows.", icon="⚠️")
 
   else:
     print("Maximum rows before removing : ",ws_old.max_row)
+    i = 2 # sample numbers start at 2\
+    def count_trials(ws_old, sample_number):
+        """Counts how many times a sample appears in column A of ws_old."""
+        count = 0
+        for i in range(1, ws_old.max_row + 1):  # Iterate through all rows in column A
+            cell_value = ws_old.cell(row=i, column=1).value  # Access the value directly in column A (1st column)
+            # print(f"Row {i} | Cell Value: {cell_value}")
+            
+            if cell_value is None or cell_value == '':  # Skip empty or None values
+                continue
+            
+            cell_value = str(cell_value).strip()  # Convert value to string and strip spaces
+            # print(f"Processed Value: {cell_value}")
+
+            if cell_value == str(sample_number):  # Compare as strings
+                count += 1
+
+        return count
+
+    j = count_trials(ws_old, i)
     ws_old.insert_cols(1, 2)
     ws_old.insert_cols(idx=4)
     ws_old.delete_rows(0,17)
@@ -79,127 +99,134 @@ def edit_excel():
         wb.save(path1)
 
     # ws_old.delete_rows(0,17)
-    i = 2 # sample numbers start at 2
-    j = 11 # Every sample has 9 trials, hence the hence sample is i + 9 = 11
+
+    print('j: ',j)
     while i <= 25:
         for cell in ws_old['C']:
             if cell.value == i:
-                if i == 2:
+                try:
+                    if i == 2:
 
-                #Choice
-                    ws.cell(row=i, column=16).value = choice(ws['M'], ws['L'], ws['K'])[i-2]
+                    #Choice
+                        ws.cell(row=i, column=16).value = choice(ws['M'], ws['L'], ws['K'])[i-2]
 
-                    # Subject Number
-                    ws.cell(row=i, column=1).value = number
+                        # Subject Number
+                        ws.cell(row=i, column=1).value = number
 
-                    # Trial
-                    string = ws_old.cell(row=i, column=3).value
-                    ws.cell(row=i, column=3).value = string
+                        # Trial
+                        string = ws_old.cell(row=i, column=3).value
+                        ws.cell(row=i, column=3).value = string
 
-                    # Condition
-                    string = ws_old.cell(row=i, column=6).value
-                    ws.cell(row=i, column=5).value = string.replace('.PICT @ :Pictures:', '')
+                        # Condition
+                        string = ws_old.cell(row=i, column=6).value
+                        ws.cell(row=i, column=5).value = string.replace('.PICT @ :Pictures:', '')
 
-                    # Relationship
-                    string = ws_old.cell(row=i, column=5).value
-                    ws.cell(row=i, column=7).value = string.replace('.PICT @ :Pictures:', '')
-                    
-                    #ControlQ1 Copy 2 the 2nd row for the trial in keys between []
-                    string = ws_old.cell(row=i+1, column=14).value
-                    ws.cell(row=i, column=8).value = string.replace('[', '').replace(']','')
+                        # Relationship
+                        string = ws_old.cell(row=i, column=5).value
+                        ws.cell(row=i, column=7).value = string.replace('.PICT @ :Pictures:', '')
+                        
+                        #ControlQ1 Copy 2 the 2nd row for the trial in keys between []
+                        string = ws_old.cell(row=i+1, column=14).value
+                        ws.cell(row=i, column=8).value = string.replace('[', '').replace(']','')
 
-                    # ControlQ1 Copy - 2 - 2the 3rd  row for the trial in keys
-                    string = ws_old.cell(row=i+2, column=14).value
-                    ws.cell(row=i, column=9).value = string.replace('[', '').replace(']','')
-        
-                    #FirstMoozleProp Copy 13 the 4th row for the trial in response label
-                    string = ws_old.cell(row=i+3, column=5).value
-                    ws.cell(row=i, column=10).value = string.replace('.PICT @ :Pictures:', '')
+                        # ControlQ1 Copy - 2 - 2the 3rd  row for the trial in keys
+                        string = ws_old.cell(row=i+2, column=14).value
+                        ws.cell(row=i, column=9).value = string.replace('[', '').replace(']','')
+            
+                        #FirstMoozleProp Copy 13 the 4th row for the trial in response label
+                        string = ws_old.cell(row=i+3, column=5).value
+                        ws.cell(row=i, column=10).value = string.replace('.PICT @ :Pictures:', '')
 
-                    # SecondMoozleProp Copy 13 the 5th row for the trial in response label
-                    string = ws_old.cell(row=i+4, column=5).value
-                    ws.cell(row=i, column=11).value = string.replace('.PICT @ :Pictures:', '')
-
-
-                    #SecondMoozleProp2 Copy 13he 6th row for the trial in response
-                    string = ws_old.cell(row=i+5, column=5).value
-                    ws.cell(row=i, column=12).value = string.replace('.PICT @ :Pictures:', '')
-
-                    # time the 6th row for that trial in Time
-                    string = ws_old.cell(row=i+6, column=12).value
-                    ws.cell(row=i, column=6).value = string
-
-                    #ChoiceResponse Copy 2 the 7th row for the trial in keys between []
-                    string = ws_old.cell(row=i+6, column=14).value
-                    ws.cell(row=i, column=13).value = string.replace('[', '').replace(']','')
+                        # SecondMoozleProp Copy 13 the 5th row for the trial in response label
+                        string = ws_old.cell(row=i+4, column=5).value
+                        ws.cell(row=i, column=11).value = string.replace('.PICT @ :Pictures:', '')
 
 
-                    #ControlQ2 Copy 2 the 8th row for the trial in keys between
-                    string = ws_old.cell(row=i+7, column=14).value
-                    ws.cell(row=i, column=14).value = string.replace('[', '').replace(']','')
-                    
-                    #ControlQ2 Copy-2 - 2 the 9th row for the trial in keys between
-                    string = ws_old.cell(row=i+8, column=14).value
-                    ws.cell(row=i, column=15).value = string.replace('[', '').replace(']','')
+                        #SecondMoozleProp2 Copy 13he 6th row for the trial in response
+                        string = ws_old.cell(row=i+5, column=5).value
+                        ws.cell(row=i, column=12).value = string.replace('.PICT @ :Pictures:', '')
 
-                    i += 1
-                else:
-                    # Subject Number
-                    ws.cell(row=i, column=1).value = number              
+                        # time the 6th row for that trial in Time
+                        string = ws_old.cell(row=i+6, column=12).value
+                        ws.cell(row=i, column=6).value = string
 
-                    # Trial
-                    string = ws_old.cell(row=j, column=3).value
-                    ws.cell(row=i, column=3).value = string
-
-                    # Condition
-                    string = ws_old.cell(row=j, column=6).value
-                    ws.cell(row=i, column=5).value = string.replace('.PICT @ :Pictures:', '')
-
-                    # Relationship
-                    string = ws_old.cell(row=j, column=5).value
-                    ws.cell(row=i, column=7).value = string.replace('.PICT @ :Pictures:', '')
-
-                    #ControlQ1 Copy 2 the 2nd row for the trial in keys between []
-                    string = ws_old.cell(row=j+1, column=14).value
-                    ws.cell(row=i, column=8).value = string.replace('[', '').replace(']','')
-
-        
-                    #ControlQ1 Copy - 2 - 2the 3rd  row for the trial in keys
-                    string = ws_old.cell(row=j+2, column=14).value
-                    ws.cell(row=i, column=9).value = string.replace('[', '').replace(']','')
-        
-
-                    #FirstMoozleProp Copy 13 the 4th row for the trial in response label
-                    string = ws_old.cell(row=j+3, column=5).value
-                    ws.cell(row=i, column=10).value = string.replace('.PICT @ :Pictures:', '')
-
-                    # SecondMoozleProp Copy 13 the 5th row for the trial in response label
-                    string = ws_old.cell(row=j+4, column=5).value
-                    ws.cell(row=i, column=11).value = string.replace('.PICT @ :Pictures:', '')
-
-                    #SecondMoozleProp2 Copy 13he 6th row for the trial in response
-                    string = ws_old.cell(row=j+5, column=5).value
-                    ws.cell(row=i, column=12).value = string.replace('.PICT @ :Pictures:', '')
+                        #ChoiceResponse Copy 2 the 7th row for the trial in keys between []
+                        string = ws_old.cell(row=i+6, column=14).value
+                        ws.cell(row=i, column=13).value = string.replace('[', '').replace(']','')
 
 
-                    # time the 6th row for that trial in Time
-                    string = ws_old.cell(row=j+6, column=12).value
-                    ws.cell(row=i, column=6).value = string
+                        #ControlQ2 Copy 2 the 8th row for the trial in keys between
+                        string = ws_old.cell(row=i+7, column=14).value
+                        ws.cell(row=i, column=14).value = string.replace('[', '').replace(']','')
+                        
+                        #ControlQ2 Copy-2 - 2 the 9th row for the trial in keys between
+                        string = ws_old.cell(row=i+8, column=14).value
+                        ws.cell(row=i, column=15).value = string.replace('[', '').replace(']','')
 
-                    #ChoiceResponse Copy 2 the 7th row for the trial in keys between []
-                    string = ws_old.cell(row=j+6, column=14).value
-                    ws.cell(row=i, column=13).value = string.replace('[', '').replace(']','')
+                        i += 1
+                    else:
+                        # Subject Number
+                        ws.cell(row=i, column=1).value = number              
 
-                    #ControlQ2 Copy 2 the 8th row for the trial in keys between
-                    string = ws_old.cell(row=j+7, column=14).value
-                    ws.cell(row=i, column=14).value = string.replace('[', '').replace(']','')
+                        # Trial
+                        string = ws_old.cell(row=j, column=3).value
+                        ws.cell(row=i, column=3).value = string
 
-                    #ControlQ2 Copy-2 - 2 the 9th row for the trial in keys between
-                    string = ws_old.cell(row=j+8, column=14).value
-                    ws.cell(row=i, column=15).value = string.replace('[', '').replace(']','')
+                        # Condition
+                        string = ws_old.cell(row=j, column=6).value
+                        ws.cell(row=i, column=5).value = string.replace('.PICT @ :Pictures:', '')
 
+                        # Relationship
+                        string = ws_old.cell(row=j, column=5).value
+                        ws.cell(row=i, column=7).value = string.replace('.PICT @ :Pictures:', '')
+
+                        #ControlQ1 Copy 2 the 2nd row for the trial in keys between []
+                        string = ws_old.cell(row=j+1, column=14).value
+                        ws.cell(row=i, column=8).value = string.replace('[', '').replace(']','')
+
+            
+                        #ControlQ1 Copy - 2 - 2the 3rd  row for the trial in keys
+                        string = ws_old.cell(row=j+2, column=14).value
+                        ws.cell(row=i, column=9).value = string.replace('[', '').replace(']','')
+            
+
+                        #FirstMoozleProp Copy 13 the 4th row for the trial in response label
+                        string = ws_old.cell(row=j+3, column=5).value
+                        ws.cell(row=i, column=10).value = string.replace('.PICT @ :Pictures:', '')
+
+                        # SecondMoozleProp Copy 13 the 5th row for the trial in response label
+                        string = ws_old.cell(row=j+4, column=5).value
+                        ws.cell(row=i, column=11).value = string.replace('.PICT @ :Pictures:', '')
+
+                        #SecondMoozleProp2 Copy 13he 6th row for the trial in response
+                        string = ws_old.cell(row=j+5, column=5).value
+                        ws.cell(row=i, column=12).value = string.replace('.PICT @ :Pictures:', '')
+
+
+                        # time the 6th row for that trial in Time
+                        string = ws_old.cell(row=j+6, column=12).value
+                        ws.cell(row=i, column=6).value = string
+
+                        #ChoiceResponse Copy 2 the 7th row for the trial in keys between []
+                        string = ws_old.cell(row=j+6, column=14).value
+                        ws.cell(row=i, column=13).value = string.replace('[', '').replace(']','')
+
+                        #ControlQ2 Copy 2 the 8th row for the trial in keys between
+                        string = ws_old.cell(row=j+7, column=14).value
+                        ws.cell(row=i, column=14).value = string.replace('[', '').replace(']','')
+
+                        #ControlQ2 Copy-2 - 2 the 9th row for the trial in keys between
+                        string = ws_old.cell(row=j+8, column=14).value
+                        ws.cell(row=i, column=15).value = string.replace('[', '').replace(']','')
+
+                        i += 1
+                        j += 9 
+                        print(i,j)
+                except:
                     i += 1
                     j += 9  
+                    print(i,j)
+                    continue
 
     for i in range(24):
         # print(choice(ws['M'], ws['L'], ws['K'])[i+1])
@@ -215,6 +242,9 @@ def edit_excel():
             file_name="workbook.xlsx",
             mime="xlsx"
         )
+
+
+        
 st.write('''
 Please make sure to have the header of the original excel file be between rows 1-17.
 Also make sure to have the Subject Number on cell A12.\nEnjoy!!''')
